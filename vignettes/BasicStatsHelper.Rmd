@@ -1,0 +1,160 @@
+---
+title: "Getting Started with BasicStatsHelper"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with BasicStatsHelper}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 5
+)
+```
+
+```{r setup}
+library(BasicStatsHelper)
+library(ggplot2)
+```
+
+# Introduction
+
+The `BasicStatsHelper` package provides simple, easy-to-use functions for common statistical analyses. This vignette demonstrates the main functions with practical examples.
+
+## Generating Synthetic Data
+
+Let's start by generating some synthetic data to work with:
+
+```{r generate-data}
+# Generate normal data
+normal_data <- generate_synthetic_data(n = 200, type = "normal", seed = 123)
+cat("Generated", length(normal_data$data), "observations from a", normal_data$distribution, "distribution\n")
+cat("True mean:", normal_data$true_mean, ", True SD:", round(normal_data$true_sd, 2), "\n")
+
+# Generate skewed data for comparison
+skewed_data <- generate_synthetic_data(n = 200, type = "skewed", seed = 456)
+cat("\nGenerated", length(skewed_data$data), "observations from a", skewed_data$distribution, "distribution\n")
+```
+
+## Descriptive Statistics
+
+Calculate comprehensive descriptive statistics:
+
+```{r descriptive-stats}
+# Analyze normal data
+normal_stats <- descriptive_stats(normal_data$data)
+print(normal_stats)
+
+# Analyze skewed data
+skewed_stats <- descriptive_stats(skewed_data$data)
+cat("\nSkewed data statistics:\n")
+cat("Mean:", round(skewed_stats$mean, 2), "\n")
+cat("Median:", round(skewed_stats$median, 2), "\n")
+cat("Standard deviation:", round(skewed_stats$sd, 2), "\n")
+```
+
+## Confidence Intervals
+
+Calculate confidence intervals for the population mean:
+
+```{r confidence-intervals}
+# 95% confidence interval for normal data
+ci_normal <- confidence_interval(normal_data$data, conf.level = 0.95)
+cat("95% Confidence Interval for Normal Data:\n")
+cat("Sample mean:", round(ci_normal$mean, 2), "\n")
+cat("CI: [", round(ci_normal$lower, 2), ",", round(ci_normal$upper, 2), "]\n")
+cat("Margin of error:", round(ci_normal$margin_error, 2), "\n")
+
+# Compare with different confidence levels
+ci_99 <- confidence_interval(normal_data$data, conf.level = 0.99)
+cat("\n99% Confidence Interval:\n")
+cat("CI: [", round(ci_99$lower, 2), ",", round(ci_99$upper, 2), "]\n")
+cat("Wider interval due to higher confidence level\n")
+```
+
+## Hypothesis Testing
+
+Perform t-tests with clear interpretations:
+
+```{r hypothesis-testing}
+# One-sample t-test: Is the mean significantly different from 50?
+ttest_one <- simple_ttest(normal_data$data, mu = 50)
+cat("One-sample t-test results:\n")
+cat(ttest_one$interpretation)
+
+# Two-sample t-test: Compare normal vs skewed data
+ttest_two <- simple_ttest(normal_data$data, skewed_data$data)
+cat("\n\nTwo-sample t-test results:\n")
+cat(ttest_two$interpretation)
+```
+
+## Data Visualization
+
+Create publication-ready plots:
+
+```{r visualization, fig.width=8, fig.height=6}
+# Basic histogram
+p1 <- plot_histogram(normal_data$data, 
+                    title = "Normal Distribution Sample",
+                    xlab = "Value",
+                    bins = 25)
+print(p1)
+
+# Histogram with normal overlay and statistics
+p2 <- plot_histogram(skewed_data$data,
+                    title = "Skewed Distribution with Statistics",
+                    add_normal = TRUE,
+                    add_stats = TRUE,
+                    color = "lightcoral",
+                    bins = 30)
+print(p2)
+```
+
+## Complete Analysis Workflow
+
+Here's a complete example of analyzing a dataset:
+
+```{r complete-workflow}
+# Generate a new dataset
+test_data <- generate_synthetic_data(n = 150, type = "bimodal", seed = 789)
+
+# Step 1: Descriptive statistics
+desc_stats <- descriptive_stats(test_data$data)
+cat("Dataset Summary:\n")
+cat("- Sample size:", desc_stats$n, "\n")
+cat("- Mean:", round(desc_stats$mean, 2), "\n")
+cat("- Median:", round(desc_stats$median, 2), "\n")
+cat("- Standard deviation:", round(desc_stats$sd, 2), "\n")
+
+# Step 2: Confidence interval
+ci <- confidence_interval(test_data$data)
+cat("\n95% Confidence Interval: [", round(ci$lower, 2), ",", round(ci$upper, 2), "]\n")
+
+# Step 3: Hypothesis test
+ttest <- simple_ttest(test_data$data, mu = 45)
+cat("\nHypothesis test (H0: μ = 45):\n")
+cat("P-value:", round(ttest$p.value, 4), "\n")
+cat("Significant?", ttest$significant, "\n")
+
+# Step 4: Visualization
+plot_histogram(test_data$data,
+              title = "Bimodal Distribution Analysis",
+              add_stats = TRUE,
+              color = "lightgreen")
+```
+
+## Conclusion
+
+The `BasicStatsHelper` package provides a streamlined workflow for common statistical analyses:
+
+1. **`generate_synthetic_data()`** - Create test datasets
+2. **`descriptive_stats()`** - Calculate comprehensive summary statistics
+3. **`confidence_interval()`** - Estimate population parameters
+4. **`simple_ttest()`** - Perform hypothesis testing with clear interpretations
+5. **`plot_histogram()`** - Create publication-ready visualizations
+
+These functions are designed to be intuitive for beginners while providing the statistical rigor needed for research applications.

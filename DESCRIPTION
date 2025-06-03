@@ -1,0 +1,25 @@
+Package: BasicStatsHelper
+Title: Simple Statistical Analysis Helper Functions
+Version: 0.1.0
+Authors@R: 
+    person("Turbo", "Du", , "turbodu@uw.edu", role = c("aut", "cre"))
+Description: Provides easy-to-use functions for common statistical analyses
+    including descriptive statistics, confidence intervals, hypothesis testing,
+    and data visualization helpers. Designed for students and researchers who
+    need quick and reliable statistical computations with clear interpretations.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports:
+    ggplot2,
+    stats
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+URL: https://github.com/turbodu222/BasicStatsHelper,
+    https://turbodu222.github.io/BasicStatsHelper/
+BugReports: https://github.com/turbodu222/BasicStatsHelper/issues
+
